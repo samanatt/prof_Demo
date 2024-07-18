@@ -1,0 +1,35 @@
+from anytree import Node, RenderTree, PreOrderIter
+from anytree.exporter import DotExporter
+
+#another part of code in previous Version
+
+def create_visual_graph(keyword, tag, res_full):
+    root = Node("Search Results")
+    search_node = Node(f"Search: {keyword} ({tag})", parent=root)
+
+    for level, level_results in enumerate(res_full, start=1):
+        level_node = Node(f"Level {level}", parent=search_node)
+        for result in level_results:
+            _, db, schema, table, row = result
+            db_node = Node(db, parent=level_node)
+            table_node = Node(f"{schema}.{table}", parent=db_node)
+            for column, value in row.items():
+                Node(f"{column}: {value}", parent=table_node)
+
+    # Print the tree structure
+    print("\nTree Structure:")
+    for pre, _, node in RenderTree(root, style=AsciiStyle()):
+        print(f"{pre}{node.name}")
+
+    # Export the tree to a DOT file
+    DotExporter(root).to_dotfile("Visual_graph.dot")
+    print("\nTree exported to 'Visual_graph.dot'")
+
+    # If you have Graphviz installed, you can render the DOT file to an image:
+    # DotExporter(root).to_picture("Visual_graph.png")
+    # print("Tree visualized in 'Visual_graph.png'")
+
+in main funcion at the end
+ # Create the visual graph
+    create_visual_graph(keyword, tag, res_full)
+
